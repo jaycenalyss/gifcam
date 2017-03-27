@@ -1,5 +1,5 @@
-#Gifcam Code for PIX-E Gif Camera
-
+#Based on: Gifcam Code for PIX-E Gif Camera by nickbrewer
+Rewritten with the intent of being more modular, eventually to use Pi Zero W's wifi/bluetooth capabilities to serv up gifs (most likely through flask, etc)
 ######A DIY Raspberry Pi Zero based camera:
 - Creates animated gifs
 - Optionally can post gifs to twitter or save directly to usb
