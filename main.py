@@ -13,6 +13,8 @@ powerled = 21
 numpics = 8
 gifdelay = 15 #ms
 
+gifdirectory = '/home/pi/gifcam/gifs/'
+
 camera = picamera.PiCamera()
 
 def setup():
@@ -57,7 +59,7 @@ def main():
             print('Giffing')
             for i in range(numpics):
                 camera.capture('image{0:04d}.jpg'.format(i))
-            filename = '/home/pi/gifcam/gifs/' + datetime.datetime.now().strftime("%Y-%m-%d%H%M%S") + ".gif"
+            filename = gifdirectory + datetime.datetime.now().strftime("%Y-%m-%d%H%M%S") + ".gif"
             print('combining')
             magick = "gm convert -delay " + str(gifdelay) + " *.jpg " + filename
             os.system(magick)
