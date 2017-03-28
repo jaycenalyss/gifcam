@@ -25,10 +25,23 @@ def setup():
     ######
     # PiCam settings
     ######
-    camera.resolution = (540,405)   #TODO: fix this res
+    camera.ISO = 400    
+    camera.resolution = (800,800)
     camera.rotation = 90            #TODO: make sure this is correct
-    #camera.brightness = 70         TODO: figure this out
+    #camera.sharpness = 0
+    camera.contrast = 50
+    camera.brightness = 80
+    #camera.saturation = 0
     camera.image_effect = 'none'
+    #camera.video_stabilization = False
+    #camera.exposure_compensation = 0
+    #camera.exposure_mode = 'auto'
+    #camera.meter_mode = 'average'
+    #camera.awb_mode = 'auto'
+    #camera.color_effects = (128,128)
+    #camera.hflip = False
+    #camera.vflip = False
+    #camera.crop = (0.0, 0.0, 1.0, 1.0)
 
     GPIO.output(statusled, 1)
 
@@ -54,3 +67,4 @@ def main():
             time.sleep(0.35)
             GPIO.output(statusled, 0)
             time.sleep(0.35)
+main()
