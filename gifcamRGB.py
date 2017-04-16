@@ -4,6 +4,8 @@ import RPi.GPIO as GPIO
 from os import system
 from multiprocessing import Process
 
+p = None
+
 shutterbutton = 19
 statusled_b = 16
 statusled_g =20
@@ -21,7 +23,7 @@ RED = 0
 GREEN = 0
 BLUE = 0
 
-gifdirectory = '/home/pi/gifcam/gifs/'
+gifdirectory = '/home/pi/gifs/'
 
 camera = picamera.PiCamera()
 
@@ -91,10 +93,14 @@ def statusLED(R,G,B):
 if __name__ == "__main__":
     setup()
 
+    p = Process(target=statusLED, args=(0,0,255,))
+    p.start()
+    p.join()
+
     try:
         while True:
             shutter = GPIO.input(shutterbutton)
-            if p.pid != None
+            if p.pid != None:
                 p.terminate()
             p = Process(target=statusLED, args=(0,255,0,))
             p.start()
