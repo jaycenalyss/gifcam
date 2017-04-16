@@ -16,12 +16,9 @@ numpics = 8
 gifdelay = 15 #ms
 
 freq = 100
-statusR = 0
-statusG = 0
-statusB = 0
-RED = 0
-GREEN = 0
-BLUE = 0
+statusR = None
+statusG = None
+statusB = None
 
 gifdirectory = '/home/pi/gifs/'
 
@@ -46,7 +43,7 @@ def setup():
     ######
     camera.ISO = 400    
     camera.resolution = (800,800)
-    camera.rotation = 90            #TODO: make sure this is correct
+    camera.rotation = 0            #TODO: make sure this is correct
     #camera.sharpness = 0
     #camera.contrast = 50
     #camera.brightness = 80
