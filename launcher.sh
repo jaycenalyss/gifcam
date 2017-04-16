@@ -8,4 +8,4 @@ flask run --host=0.0.0.0
 
 # actual program responsible for take pictures and making gifs
 # change back to gifcam.py for Nick Brewer's original Pix-E program
-sudo python main.py
+sudo python gifcamRGB.py
