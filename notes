@@ -1,0 +1,65 @@
+https://unix.stackexchange.com/questions/316031/programmatically-switch-between-ad-hoc-and-regular-wireless-network
+
+edit /etc/network/interfaces:
+#start /etc/network/interfaces
+auto wlan0
+allow-hotplug wlan0
+
+iface adhoc inet static
+  address 192.168.0.1
+  netmask 255.255.255.0
+  wireless-channel 0 #maybe 6?
+  wireless-essid Pix-E-pi
+  wireless-key | wpa_passphrase KEY
+  # TODO: check man wireless, man interfaces, /usr/share/doc/wireless-tools/README for best wireless mode
+  wireless-mode ad-hoc
+  
+iface normal inet manual
+  wpa-roam /etc/wpa_supplicant/wpa-supplicant.conf
+#end /etc/network/interfaces
+
+run: ifup wlan0=adhoc/normal to change configuration modes
+need to run isc-dhcp-server to assign IPs!!!
+
+#start /etc/dhcp/dhcpd.conf  
+ddns-update-style none;
+option domain-name "Pix-E-pi";
+default-lease-time 600;
+max-lease-time 7200;
+
+authoritative;
+log-facility local7;
+
+subnet 192.168.0.0 netmask 255.255.255.0 {
+    range 192.168.0.2 192.168.0.255;
+    option broadcast-address 192.168.0.255;
+}
+#end /etc/dhcp/dhcpd.conf
+
+
+disable bluetooth
+(?)sudo iwconfig bluetooth txpower off
+(?)sudo systemctl disable hciuart
+dtoverlay=disable-bt in /boot/config.txt
+
+
+after changing files: /etc/init.d/networking restart
+
+
+#start switching script to adhoc
+#!/bin/bash
+#turns on wifi broadcast, will also start the flask server
+ifdown wlan0
+#TODO: do hostapd files matter if service stopped?
+cp /etc/default/hostapd.adhoc /etc/default/hostapd
+cp /etc/init.d/hostapd.adhoc /etc/init.d/hostapd
+/usr/sbin/hostapd /etc/hostapd/hostapd.conf
+service dhcpd start
+service hostapd start
+service isc-dhcp-server start
+ifup wlan0=adhoc
+#end switching script to adhoc
+
+****************
+OOOOR
+https://gist.github.com/Lewiscowles1986/fecd4de0b45b2029c390
