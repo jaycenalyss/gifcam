@@ -2,6 +2,7 @@
 *.jpg
 *.gif
 gifs/
+notes
 
 ## Github recommended Python specific ignores
 # Byte-compiled / optimized / DLL files
