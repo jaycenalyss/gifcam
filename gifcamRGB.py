@@ -4,14 +4,15 @@ import RPi.GPIO as GPIO
 from os import system
 from multiprocessing import Process
 
-p = None
+#wifi = 0
 
 shutterbutton = 19
 statusled_b = 16
 statusled_g =20
 statusled_r = 21
 powerled = 12       #on shutter button
-wifiOn = 2
+#wifiOn = 4
+powerswitch = 4
 
 numpics = 8
 gifdelay = 15 #ms
@@ -33,6 +34,8 @@ def setup():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(shutterbutton, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+#    GPIO.setup(wifiOn, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+    GPIO.setup(powerswitch, GPIO.IN, pull_up_down = GPIO.PUD_UP)
     GPIO.setup(powerled, GPIO.OUT)
     GPIO.setup(statusled_b, GPIO.OUT)
     GPIO.setup(statusled_g, GPIO.OUT)
@@ -68,6 +71,9 @@ def setup():
     statusR.start(0)
     statusG.start(0)
     statusB.start(0)
+    statusR.ChangeDutyCycle(0)
+    statusG.ChangeDutyCycle(75)
+    statusB.ChangeDutyCycle(75)
 
 #TODO: define function to switch on wireless and start flask/something to serve up gifs
 
@@ -77,9 +83,15 @@ if __name__ == "__main__":
     try:
         while True:
             shutter = GPIO.input(shutterbutton)
-            statusR.ChangeDutyCycle(0)
-            statusG.ChangeDutyCycle(75)
-            statusB.ChangeDutyCycle(75)
+            #if GPIO.input(wifiOn):
+                #wifi = True
+            #if wifi:
+                #continue
+            if powerswitch:
+                statusR.ChangeDutyCycle(50)
+                statusB.ChangeDutyCycle(0)
+                statusG.ChangeDutyCycle(50)
+                os.system("sudo shutdown now")
             if shutter == False:
                 statusR.ChangeDutyCycle(50)
                 statusB.ChangeDutyCycle(0)
