@@ -11,11 +11,12 @@ statusled_b = 16
 statusled_g =20
 statusled_r = 21
 powerled = 12       #on shutter button
+wifiOn = 2
 
 numpics = 8
 gifdelay = 15 #ms
 
-freq = 100
+freq = 2
 statusR = None
 statusG = None
 statusB = None
@@ -67,46 +68,22 @@ def setup():
     statusR.start(0)
     statusG.start(0)
     statusB.start(0)
-    
-
-def statusLED(R,G,B):
-    while True:
-        for i in range(0,101):
-            statusR.ChangeDutyCycle(R*i)
-            statusG.ChangeDutyCycle(G*i)
-            statusB.ChangeDutyCycle(B*i)
-            sleep(0.02)
-        for i in range(101,0):
-            statusR.ChangeDutyCycle(R*i)
-            statusG.ChangeDutyCycle(G*i)
-            statusB.ChangeDutyCycle(B*i)
-            sleep(0.02)
-        
-    
-    
 
 #TODO: define function to switch on wireless and start flask/something to serve up gifs
 
 if __name__ == "__main__":
     setup()
 
-    p = Process(target=statusLED, args=(0,0,255,))
-    p.start()
-    p.join()
-
     try:
         while True:
             shutter = GPIO.input(shutterbutton)
-            if p.pid != None:
-                p.terminate()
-            p = Process(target=statusLED, args=(0,255,0,))
-            p.start()
-            p.join()
+            statusR.ChangeDutyCycle(0)
+            statusG.ChangeDutyCycle(75)
+            statusB.ChangeDutyCycle(75)
             if shutter == False:
-                p.terminate()
-                p = Process(target=statusLED, args=(255,255,0,))
-                p.start()
-                p.join()
+                statusR.ChangeDutyCycle(50)
+                statusB.ChangeDutyCycle(0)
+                statusG.ChangeDutyCycle(0)
                 print('Giffing')
                 for i in range(numpics):
                     camera.capture('image{0:04d}.jpg'.format(i))
@@ -115,6 +92,9 @@ if __name__ == "__main__":
                 magick = "gm convert -delay " + str(gifdelay) + " *.jpg " + filename
                 os.system(magick)
                 print('magicked\nready')
+                statusR.ChangeDutyCycle(0)
+                statusG.ChangeDutyCycle(75)
+                statusB.ChangeDutyCycle(75)
     except KeyboardInterrupt:
         GPIO.cleanup()
     GPIO.cleanup()
